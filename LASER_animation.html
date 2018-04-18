@@ -1,0 +1,318 @@
+<!--
+   LASER_animation.html
+
+  Code: Free license 
+   
+-->
+
+<!DOCTYPE html >
+
+<head>
+	<title>Animation LASER</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.27" />
+</head>
+
+<body>
+	<script language="Javascript" type="text/javascript" >
+		//Variable pour répéter la fx principale
+		var boucle;
+		
+		//Fonction pour afficher un "atome" (Cercle + 2 niveaux d'énergie + 1 électron)
+		function atome(x, y, etat) { 
+			//etat: 0=emission 1=excité
+			
+			//Initialisation
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+				
+			//Affichage de "l'atome"
+				//Niveaux d'énergie
+			context.beginPath();
+				//E2		
+			context.moveTo(x, y);
+			context.lineTo(x+90, y);
+				//E1
+			context.moveTo(x, y+120);
+			context.lineTo(x+90, y+120);
+				//Fin
+			context.lineWidth = 3;
+			context.stroke();
+			context.closePath();
+				//électron
+			if (etat == 1){
+				context.beginPath();		
+				context.fillStyle = "#000000";
+				context.arc(x+45, y, 10, 0, Math.PI*2);
+				context.fill();
+				context.closePath();
+			}
+			else {
+				context.beginPath();		
+				context.fillStyle = "#000000";
+				context.arc(x+45, y+120, 10, 0, Math.PI*2);
+				context.fill();
+				context.closePath();
+			}
+				//On entoure l'atome
+			context.beginPath();		
+			context.arc(x+45, y+60, 80, 0, Math.PI*2);
+			context.stroke();
+			context.closePath();
+		}
+		
+		//Lancement
+		window.onload = function() {
+			//Initialisation
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+			
+			//Marche ou marche pas?
+			if(!canvas) {
+				alert("Ne fonctionne pas. (Canvas non récupéré)");
+				return;
+			}
+			
+			if(!context) {
+				alert("Ne fonctionne pas. (Context non récupéré)");
+				return;
+			}
+			
+			//Affichage du laser
+			context.beginPath();
+				//Laser			
+			context.moveTo(0, 0);
+			context.lineTo(0, 200);
+			context.lineTo(750, 200);
+			context.lineTo(750, 0);
+			context.lineTo(0, 0);
+				//Miroir gauche
+			context.lineTo(25, 0);
+			context.lineTo(25, 200);
+				//Miroir droite
+			context.lineTo(725, 200);
+			context.lineTo(725, 0);
+				//Affichage
+			context.lineWidth = 3;
+			context.stroke();
+			context.closePath();
+			
+			//Affichage des images
+			//var img = new Image();
+			//img.src = "excite.png";
+			//context.drawImage(img, posX=100, posY=10, width=100, height=150); //Gauche
+			//context.drawImage(img, posX=300, posY=10, width=100, height=150); //Milieu
+			//context.drawImage(img, posX=500, posY=10, width=100, height=150); //Droite
+			atome(100, 40, 0); //Gauche
+			atome(300, 40, 0); //Milieu
+			atome(500, 40, 0); //Droite
+			
+			//Initialisation de l'état des atomes
+			atomes = [1, 1, 1];
+			
+			//Initialisation des positions des photons
+			coordx = [24];
+			coordy = [75];
+			
+			//Initialisation des orientations des photons
+			dx = [2];
+			dy = [0];
+		}
+		
+		//Fonction Principale
+		function main(cmd, couleur) {
+			//Initialisation
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+			clearTimeout(boucle);	
+			
+			//Si on a cliqué sur le 2e bouton (source d'énergie)
+			if (cmd == 'reset') {
+				//Initialisation de l'état des atomes
+				atomes = [1, 1, 1];
+			}	
+			
+			//Si on a cliqué sur le bouton
+			if (cmd == 1) {
+				//Réinitialisation du canvas
+				context.clearRect(0, 0, 1500, 500);
+				clearTimeout();
+				
+				//Affichage du laser et du rayon			
+				context.beginPath();
+					//Laser			
+				context.moveTo(0, 0);
+				context.lineTo(0, 200);
+				context.lineTo(750, 200);
+				context.lineTo(750, 0);
+				context.lineTo(0, 0);
+					//Miroir gauche
+				context.lineTo(25, 0);
+				context.lineTo(25, 200);
+					//Miroir droite
+				context.lineTo(725, 200);
+				context.lineTo(725, 0);
+					//Affichage
+				context.stroke();
+				context.closePath();
+				
+				//Affichage des images
+				atome(100, 40, 0); //Gauche
+				atome(300, 40, 0); //Milieu
+				atome(500, 40, 0); //Droite
+				
+				//Initialisation de l'état des atomes
+				atomes = [1, 1, 1];
+				
+				//Initialisation des positions des photons
+				coordx = [24];
+				coordy = [75];
+				
+				//Initialisation des orientations des photons
+				dx = [2];
+				dy = [0];
+								
+				//On relance la fonction
+				boucle = setTimeout(main, 1000, '0', couleur);
+			}
+			//L'animation
+			else {
+				//Réinitialisation du canvas
+				context.clearRect(0, 0, 1500, 200);
+				
+				//Affichage du laser et du rayon
+				context.beginPath();
+					//Laser			
+				context.moveTo(0, 0);
+				context.lineTo(0, 200);
+				context.lineTo(750, 200);
+				context.lineTo(750, 0);
+				context.lineTo(0, 0);
+					//Miroir gauche
+				context.lineTo(25, 0);
+				context.lineTo(25, 200);
+					//Miroir droite
+				context.lineTo(725, 200);
+				context.lineTo(725, 0);
+					//Affichage
+				context.stroke();
+				context.closePath();
+				
+					//Rayon (si il y a des atomes)
+				if (coordx != 0) {
+					context.beginPath();
+					context.fillStyle = couleur;
+					context.fillRect(750, 90, 750, 10);
+					context.fill();			
+					context.closePath();
+				}
+				
+				//Affichage des images
+				var img = new Image();
+				for(count = 0; count < atomes.length; count++) {
+					etat = atomes[count];
+					atome(100+200*count, posY=40, etat);
+				}
+				
+				//Affichage des photons
+				for(count = 0; count < coordx.length; count++) {
+					context.beginPath();
+					context.fillStyle = couleur;
+					context.arc(coordx[count], coordy[count], 10, 0, Math.PI*2);
+					context.fill();
+					context.closePath();
+				}
+				
+				//Pour le mouvement
+				for(count = 0; count < coordx.length; count++) {
+					coordx[count] += dx[count];
+					coordy[count] += dy[count];
+				}
+				
+				//Si il y a émission: on rajoute un photon
+				if (coordx[0] == 100 && atomes[0] != 0) {
+					coordx.push(100);
+					coordy.push(125*Math.random()+25);
+					dx.push(dx[0]);
+					dy.push(0);
+					atomes[0] = 0;
+				}
+				
+				if (coordx[0] == 300  && atomes[1] != 0) {
+					coordx.push(300);
+					coordy.push(125*Math.random()+25);
+					dx.push(dx[0]);
+					dy.push(0);
+					atomes[1] = 0;
+				}
+				
+				if (coordx[0] == 500  && atomes[2] != 0) {
+					coordx.push(500);
+					coordy.push(125*Math.random()+25);
+					dx.push(dx[0]);
+					dy.push(0);
+					atomes[2] = 0;
+				}
+				
+				//Miroir, ô mon beau miroir (-_-')
+				if (coordx[0] == 724) {
+					//coordx.shift();
+					coordx.pop();
+					coordy.pop();
+					dx.pop();
+					dy.pop();
+					for(count = 0; count < coordx.length; count++) {
+						dx[count] = -2;
+					}
+				}
+				if (coordx[0] == 30) {
+					for(count = 0; count < coordx.length; count++) {
+						dx[count] = 2;
+					}
+				}
+				
+				//On relance la fonction
+				boucle = setTimeout(main, 8, '0', couleur);				
+			}
+		}
+		
+	</script>
+	
+	<!--p<>/section><select id="couleur" onchange=main() size="1">
+		<option value="1">Rouge</option>
+		<option value="2">Vert</option>
+		<option value="3">Bleu</option>
+	</select></p-->
+	
+	<h1>Comment fonctionne un laser, ou l'émission stimulée.</h1>
+	
+	<p>Choisissez un élément: 
+	<select id="couleur" size=1><option value="#ff0000">Strontium</option>
+						<option value="#ff6600">Calcium</option>
+						<option value="#ffff00">Sodium</option>
+						<option value="#00ff00">Baryum</option>
+						<option value="#0000ff">Cuivre</option>
+						<option value="#660099">Potassium</option></select>
+	Puis: <button onclick="main(1, couleur.value)"><span style="font-size=16px">Allumez le laser</span></button>
+	</p>
+	
+	<p></section><canvas id="canvas" width="1500" height="200"></canvas></p>
+	
+	<p><button onclick="main('reset', couleur.value)">Source d'énergie</button></p>
+		
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
