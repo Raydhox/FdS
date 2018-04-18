@@ -1,0 +1,276 @@
+<!--
+   FdS_animation.html
+
+  Code: Free license
+   
+-->
+
+<!DOCTYPE html >
+
+<head>
+	<title>Animation Feux d'artifices</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.27" />
+</head>
+
+<body>
+	<script language="Javascript" type="text/javascript" >
+		//Variable pour répéter la fx principale
+		var boucle;
+		
+		//Fonction pour afficher un "atome" (Cercle + 2 niveaux d'énergie + 1 électron)
+		function atome(x, y, etat) { 
+			//etat: 0=emission 1=excité 2=desexcitation
+			
+			//Initialisation
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+				
+			//Affichage de "l'atome"
+				//Niveaux d'énergie
+			context.beginPath();
+				//E2		
+			context.moveTo(x, y);
+			context.lineTo(x+90, y);
+				//E1
+			context.moveTo(x, y+120);
+			context.lineTo(x+90, y+120);
+				//Fin
+			context.lineWidth = 3;
+			context.stroke();
+			context.closePath();
+				//électron
+				//état fondamental
+			if (etat == 0) {
+				context.beginPath();		
+				context.fillStyle = "#000000";
+				context.arc(x+45, y+120, 10, 0, Math.PI*2);
+				context.fill();
+				context.closePath();
+			}
+				//état excité
+			if (etat == 1) {
+				context.beginPath();		
+				context.fillStyle = "#000000";
+				context.arc(x+45, y, 10, 0, Math.PI*2);
+				context.fill();
+				context.closePath();
+			}
+				//désexcitation
+			if (etat == 2) {
+				context.beginPath();		
+				context.fillStyle = "#000000";
+				context.arc(x+45, y+120, 10, 0, Math.PI*2);
+				context.fill();
+				context.closePath();
+				context.beginPath();
+					//Flèche
+				context.beginPath();		
+				context.moveTo(x+45, y);
+				context.lineTo(x+45, y+120);
+				context.lineTo(x+35, y+110);
+				context.lineTo(x+45, y+120);
+				context.lineTo(x+55, y+110);
+				context.lineWidth = 3;
+				context.stroke();
+				context.closePath();
+			}
+				//On entoure l'atome
+			context.beginPath();		
+			context.arc(x+45, y+60, 80, 0, Math.PI*2);
+			context.stroke();
+			context.closePath();
+		}		
+		
+		//Lancement
+		window.onload = function() {
+			//Initialisation
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+
+			//Marche ou marche pas?
+			if(!canvas) {
+				alert("Ne fonctionne pas. (Canvas non récupéré)");
+				return;
+			}
+			
+			if(!context) {
+				alert("Ne fonctionne pas. (Context non récupéré)");
+				return;
+			}
+			
+			//Affichage des images
+			//var excite = new Image();
+			//excite.src = "emission.png";
+			//context.drawImage(excite, posX=325, posY=50, width=100, height=150); //Haut
+			//context.drawImage(excite, posX=325, posY=350, width=100, height=150); //Bas
+			//context.drawImage(excite, posX=200, posY=100, width=100, height=150); //Droite Up
+			//context.drawImage(excite, posX=200, posY=300, width=100, height=150); //Droute Down
+			//context.drawImage(excite, posX=450, posY=100, width=100, height=150); //Gauche Up
+			//context.drawImage(excite, posX=450, posY=300, width=100, height=150); //Gauche Down
+			atome(325, 50, 0); //Haut
+			atome(325, 350, 0); //Bas
+			atome(125, 100, 0); //Droite Up
+			atome(125, 300, 0); //Droite Down
+			atome(525, 100, 0); //Gauche Up
+			atome(525, 300, 0); //Gauche Down
+			
+			//Initialisation des positions des photons
+			coordx = [370, 370, 170, 170, 570, 570];
+			coordy = [110, 410, 160, 360, 160, 360];
+				
+			//Initialisation des orientations des photons
+			alpha = [2*Math.PI*Math.random(), 2*Math.PI*Math.random(),
+					2*Math.PI*Math.random(), 2*Math.PI*Math.random(),
+					2*Math.PI*Math.random(), 2*Math.PI*Math.random()];
+			dx = [2*Math.cos(alpha[0]), 2*Math.cos(alpha[1]),
+					2*Math.cos(alpha[2]), 2*Math.cos(alpha[3]),
+					2*Math.cos(alpha[4]), 2*Math.cos(alpha[5])];
+			dy = [2*Math.sin(alpha[0]), 2*Math.sin(alpha[1]),		
+					2*Math.sin(alpha[2]), 2*Math.sin(alpha[3]),
+					2*Math.sin(alpha[4]), 2*Math.sin(alpha[5])];
+		}
+		
+		//Fonction Principale
+		function main(cmd, couleur, coordx, coordy, dx, dy) {
+			//Initialisation
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+			clearTimeout(boucle);			
+			
+			//Si on a cliqué sur le bouton
+			if (cmd == 1) {
+				//Réinitialisation du canvas
+				context.clearRect(0, 0, 750, 500);
+				clearTimeout(boucle);
+				
+				//Affichage des images
+				atome(325, 50, 1); //Haut
+				atome(325, 350, 1); //Bas
+				atome(125, 100, 1); //Droite Up
+				atome(125, 300, 1); //Droite Down
+				atome(525, 100, 1); //Gauche Up
+				atome(525, 300, 1); //Gauche Down
+				
+				//Initialisation des positions des photons
+				coordx = [370, 370, 170, 170, 570, 570];
+				coordy = [110, 410, 160, 360, 160, 360];
+				
+				//Initialisation des orientations des photons
+				alpha = [2*Math.PI*Math.random(), 2*Math.PI*Math.random(),
+					2*Math.PI*Math.random(), 2*Math.PI*Math.random(),
+					2*Math.PI*Math.random(), 2*Math.PI*Math.random()];
+				dx = [2*Math.cos(alpha[0]), 2*Math.cos(alpha[1]),
+					2*Math.cos(alpha[2]), 2*Math.cos(alpha[3]),
+					2*Math.cos(alpha[4]), 2*Math.cos(alpha[5])];
+				dy = [2*Math.sin(alpha[0]), 2*Math.sin(alpha[1]),		
+					2*Math.sin(alpha[2]), 2*Math.sin(alpha[3]),
+					2*Math.sin(alpha[4]), 2*Math.sin(alpha[5])];
+				//dx = [0, 0, 0, 0, 0, 0];
+				//dy = [0, 0, 0, 0, 0, 0];
+								
+				//On relance la fonction
+				boucle = setTimeout(main, 1500, '2', couleur, coordx, coordy, dx, dy);
+			}
+			
+			//Etat de transition
+			else if (cmd == 2) {
+				//Réinitialisation du canvas
+				context.clearRect(0, 0, 750, 500);
+				clearTimeout(boucle);
+				
+				//Animation
+				atomes = [2, 2, 2, 2, 2, 2]; //Etats des atomes
+				atome(325, 50, atomes[0]); //Haut
+				atome(325, 350, atomes[1]); //Bas
+				atome(125, 100, atomes[2]); //Droite Up
+				atome(125, 300, atomes[3]); //Droite Down
+				atome(525, 100, atomes[4]); //Gauche Up
+				atome(525, 300, atomes[5]); //Gauche Down
+				
+				//Initialisation des positions des photons
+				coordx = [370, 370, 170, 170, 570, 570];
+				coordy = [110, 410, 160, 360, 160, 360];
+				
+				//On relance la fonction
+				boucle = setTimeout(main, 500, '0', couleur, coordx, coordy, dx, dy);
+			}
+			
+			//L'animation
+			else {
+				//Réinitialisation du canvas
+				context.clearRect(0, 0, 750, 500);
+				clearTimeout(boucle);
+				
+				//Affichage des images
+				atome(325, 50, atomes[0]); //Haut
+				atome(325, 350, atomes[1]); //Bas
+				atome(125, 100, atomes[2]); //Droite Up
+				atome(125, 300, atomes[3]); //Droite Down
+				atome(525, 100, atomes[4]); //Gauche Up
+				atome(525, 300, atomes[5]); //Gauche Down
+				
+				//Affichage des photons
+				for(count = 0; count < 6; count++) {
+					if (atomes[count] == 0) {
+						context.beginPath();
+						context.fillStyle = couleur;
+						context.arc(coordx[count], coordy[count], 10, 0, Math.PI*2);
+						context.fill();
+						context.closePath();
+					}
+				}
+				
+				//Pour le mouvement
+				for(count = 0; count < 6; count++) {
+					if (atomes[count] == 0) {
+						coordx[count] += dx[count];
+						coordy[count] += dy[count];
+					}
+				}
+				
+				//Changemment d'état des atomes (=désexcitation aléatoire)
+				for(count = 0; count < atomes.length; count++) {
+					pourcent = parseInt(200*Math.random());
+					if (atomes[count] == 2 && pourcent == 1)  {
+						atomes[count] = 0;
+					}
+				}
+				
+				//On relance la fonction
+				boucle = setTimeout(main, 8, '0', couleur, coordx, coordy, dx, dy);				
+			}
+		}
+		
+	</script>
+	
+	<h1>L'émission spontanée, c'est quoi?</h1>
+	
+	<p>Choisissez un élément: 
+	<select id="couleur" size=1><option value="#ff0000">Strontium</option>
+						<option value="#ff6600">Calcium</option>
+						<option value="#ffff00">Sodium</option>
+						<option value="#00ff00">Baryum</option>
+						<option value="#0000ff">Cuivre</option>
+						<option value="#660099">Potassium</option></select>
+	Puis: <button onclick="main(1, couleur.value, coordx, coordy, dx, dy)"><span style="font-size=16px">Cliquez ici</span></button>
+	</p>
+	
+	<p></section><canvas id="canvas" width="750" height="500"></canvas></p>
+		
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
